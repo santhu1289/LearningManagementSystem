@@ -36,6 +36,7 @@ export const authApi = createApi({
       query: () => ({
         url: "profile",
         method: "GET",
+        credentials:"include"
       }),
     }),
     // updateUser: builder.mutation({

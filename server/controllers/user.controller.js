@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import { genrateToken } from "../utils/genrateToken.js";
+import { json } from "express";
 export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -86,8 +87,10 @@ export const logout = async (_, res) => {
 
 export const getUserProfile = async (req, res) => {
   try {
+    console.log("retriving user data for id:", req.id)
     const userId = req.id;
     const user = await User.findById(userId).select("-password");
+    console.log("user found", json(user))
     if (!user) {
       return res.status(404).json({
         message: "Profile Not Found",
