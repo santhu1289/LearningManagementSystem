@@ -2,8 +2,8 @@ import { CreditCard, LogOut, Menu, User } from "lucide-react";
 import Logo from "../assets/500x500.png";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // eslint-disable-next-line no-unused-vars
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,9 +25,25 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import { useLogoutUserMutation } from "@/features/api/authApi";
+//import { userLoggedOut } from "@/features/authSlice";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const user = true;
+  const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || "user Log out");
+      navigate("/login");
+    }
+  }, [isSuccess]);
+
+  const logoutHandler = async () => {
+    await logoutUser();
+  };
 
   return (
     <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
@@ -57,15 +73,19 @@ const Navbar = () => {
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
                     <User />
-                    <span><Link to="my-learning">My Learning</Link></span>
+                    <span>
+                      <Link to="my-learning">My Learning</Link>
+                    </span>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <CreditCard />
-                    <span><Link to="profile">Edit Profile</Link></span>
+                    <span>
+                      <Link to="profile">Edit Profile</Link>
+                    </span>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <LogOut />
+                <DropdownMenuItem onClick={logoutHandler}>
+                  {/* <LogOut /> */}
                   <span>Log out</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
